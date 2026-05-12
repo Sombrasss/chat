@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Grupos</title>
+
+<style>
+
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+/* BODY */
+
+body{
+background:#f0f2f5;
+padding-bottom:100px;
+}
+
+/* TOPO */
+
+.topbar{
+background:white;
+padding:15px;
+font-size:22px;
+font-weight:bold;
+position:sticky;
+top:0;
+z-index:1000;
+border-bottom:1px solid #ddd;
+}
+
+/* BOTÕES MEUS/TODOS */
+
+.tabs{
+display:flex;
+gap:10px;
+padding:15px;
+}
+
+.tabs button{
+flex:1;
+padding:14px;
+border:none;
+border-radius:14px;
+background:white;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* BOTÃO ATIVO */
+
+.tabs .active{
+background:#1877f2;
+color:white;
+}
+
+/* LISTA DOS GRUPOS */
+
+#groups{
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+/* CARD */
+
+.group-card{
+background:white;
+border-radius:18px;
+padding:12px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+box-shadow:0 3px 10px rgba(0,0,0,0.08);
+}
+
+/* LADO ESQUERDO */
+
+.group-left{
+display:flex;
+align-items:center;
+gap:12px;
+flex:1;
+cursor:pointer;
+}
+
+/* FOTO */
+
+.group-photo{
+width:65px;
+height:65px;
+border-radius:18px;
+object-fit:cover;
+}
+
+/* INFO */
+
+.group-info h3{
+font-size:17px;
+margin-bottom:4px;
+}
+
+.group-info p{
+font-size:13px;
+color:#666;
+}
+
+/* MENU */
+
+.menu{
+position:relative;
+}
+
+/* BOTÃO 3 PONTOS */
+
+.menu-btn{
+background:none;
+border:none;
+font-size:24px;
+cursor:pointer;
+}
+
+/* DROPDOWN */
+
+.dropdown{
+position:absolute;
+right:0;
+top:35px;
+background:white;
+border-radius:14px;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+display:none;
+flex-direction:column;
+overflow:hidden;
+z-index:999;
+min-width:200px;
+}
+
+/* BOTÕES MENU */
+
+.dropdown button{
+padding:14px;
+border:none;
+background:white;
+cursor:pointer;
+text-align:left;
+font-size:14px;
+}
+
+.dropdown button:hover{
+background:#f0f2f5;
+}
+
+/* BOTÃO CRIAR */
+
+#createBtn{
+position:fixed;
+bottom:80px;
+right:20px;
+width:60px;
+height:60px;
+border:none;
+border-radius:50%;
+background:#1877f2;
+color:white;
+font-size:30px;
+cursor:pointer;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+/* MODAL */
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+/* CONTEÚDO MODAL */
+
+.modal-content{
+background:white;
+width:90%;
+max-width:400px;
+padding:20px;
+border-radius:20px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+/* INPUTS */
+
+.modal-content input,
+.modal-content textarea{
+padding:14px;
+border:none;
+background:#f0f2f5;
+border-radius:12px;
+outline:none;
+}
+
+/* BOTÃO MODAL */
+
+.modal-content button{
+padding:14px;
+border:none;
+border-radius:12px;
+background:#1877f2;
+color:white;
+font-size:15px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+<script src="navbar.js"></script>
+<!-- TOPO -->
+
+<div class="topbar">
+
+Grupos
+
+</div>
+
+<!-- BOTÕES -->
+
+<div class="tabs">
+
+<button
+id="myBtn"
+class="active">
+
+Meus grupos
+
+</button>
+
+<button
+id="allBtn">
+
+Todos grupos
+
+</button>
+
+</div>
+
+<!-- LISTA -->
+
+<div id="groups"></div>
+
+<!-- BOTÃO CRIAR -->
+
+<button id="createBtn">
+
++
+
+</button>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+<div class="modal-content">
+
+<input
+type="text"
+id="nomeGrupo"
+placeholder="Nome do grupo">
+
+<textarea
+id="descGrupo"
+placeholder="Descrição"></textarea>
+
+<input
+type="text"
+id="fotoGrupo"
+placeholder="URL da foto">
+
+<button id="saveGroupBtn">
+
+Salvar grupo
+
+</button>
+
+</div>
+
+</div>
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script src="fr.js"></script>
+
+<script>
+
+/* AUTH */
+
+const auth =
+firebase.auth();
+
+/* USER */
+
+let currentUser;
+
+/* MODO */
+
+let modo =
+"meus";
+
+/* EDITAR */
+
+let editando =
+null;
+
+//////////////////////////////////////////////////
+// LOGIN
+
+auth.onAuthStateChanged(
+async user => {
+
+if(!user){
+
+window.location.href =
+"index1.html";
+
+return;
+
+}
+
+currentUser = user;
+
+await carregar();
+
+//////////////////////////////////////////////////
+// LINK CONVITE
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+const grupoId =
+params.get("grupo");
+
+if(!grupoId) return;
+
+const doc =
+await db.collection("grupos")
+.doc(grupoId)
+.get();
+
+if(!doc.exists){
+
+alert(
+"Grupo não encontrado"
+);
+
+return;
+
+}
+
+const grupo =
+doc.data();
+
+const membros =
+grupo.membros || [];
+
+//////////////////////////////////////////////////
+// JÁ É MEMBRO
+
+if(
+membros.includes(
+currentUser.email
+)
+){
+
+const abrir =
+confirm(
+
+"Você já faz parte do grupo.\n\nAbrir grupo?"
+
+);
+
+if(!abrir) return;
+
+localStorage.setItem(
+"chatNome",
+grupoId
+);
+
+window.location.href =
+"chat.html";
+
+return;
+
+}
+
+//////////////////////////////////////////////////
+// ENTRAR
+
+const entrar =
+confirm(
+
+"Você não faz parte do grupo:\n\n" +
+
+grupo.nome +
+
+"\n\nOK = Entrar\nCancelar = Não entrar"
+
+);
+
+if(!entrar) return;
+
+await db.collection("grupos")
+.doc(grupoId)
+.update({
+
+membros:
+firebase.firestore
+.FieldValue
+.arrayUnion(
+currentUser.email
+)
+
+});
+
+localStorage.setItem(
+"chatNome",
+grupoId
+);
+
+window.location.href =
+"chat.html";
+
+});
+
+//////////////////////////////////////////////////
+// BOTÃO MEUS
+
+myBtn.onclick = () => {
+
+modo = "meus";
+
+myBtn.classList.add(
+"active"
+);
+
+allBtn.classList.remove(
+"active"
+);
+
+carregar();
+
+};
+
+//////////////////////////////////////////////////
+// BOTÃO TODOS
+
+allBtn.onclick = () => {
+
+modo = "todos";
+
+allBtn.classList.add(
+"active"
+);
+
+myBtn.classList.remove(
+"active"
+);
+
+carregar();
+
+};
+
+//////////////////////////////////////////////////
+// CARREGAR
+
+async function carregar(){
+
+const groups =
+document.getElementById(
+"groups"
+);
+
+groups.innerHTML = "";
+
+const snap =
+await db.collection("grupos")
+.get();
+
+snap.forEach(doc => {
+
+const grupo =
+doc.data();
+
+const membros =
+grupo.membros || [];
+
+//////////////////////////////////////////////////
+// FILTRO
+
+if(
+modo === "meus" &&
+!membros.includes(
+currentUser.email
+)
+){
+return;
+}
+
+//////////////////////////////////////////////////
+// CARD
+
+const div =
+document.createElement("div");
+
+div.className =
+"group-card";
+
+div.innerHTML = `
+
+<div
+class="group-left"
+
+onclick="abrirGrupo('${doc.id}')">
+
+<img
+class="group-photo"
+
+src="${
+grupo.foto ||
+'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+}">
+
+<div class="group-info">
+
+<h3>
+
+${grupo.nome}
+
+</h3>
+
+<p>
+
+${grupo.descricao || ''}
+
+</p>
+
+<!-- MEMBROS -->
+
+<p style="
+margin-top:4px;
+font-size:12px;
+color:#1877f2;
+font-weight:bold;
+">
+
+👥 ${membros.length} membros
+
+</p>
+
+</div>
+
+</div>
+
+<!-- MENU -->
+
+<div class="menu">
+
+<button
+class="menu-btn"
+
+onclick="toggleMenu(event,this)">
+
+⋮
+
+</button>
+
+<div class="dropdown">
+
+${
+grupo.dono === currentUser.email
+
+?
+
+`
+
+<button
+onclick="editarGrupo('${doc.id}')">
+
+Editar grupo
+
+</button>
+
+<button
+onclick="apagarGrupo('${doc.id}')">
+
+Apagar grupo
+
+</button>
+
+<button
+onclick="removerPessoa('${doc.id}')">
+
+Remover pessoa
+
+</button>
+
+`
+
+:
+
+''
+}
+
+<button
+onclick="gerarLink('${doc.id}')">
+
+Copiar link convite
+
+</button>
+
+<button
+onclick="sairGrupo('${doc.id}')">
+
+Sair do grupo
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+groups.appendChild(div);
+
+});
+
+}
+
+//////////////////////////////////////////////////
+// MENU
+
+function toggleMenu(event,btn){
+
+event.stopPropagation();
+
+document
+.querySelectorAll(".dropdown")
+.forEach(d => {
+
+d.style.display =
+"none";
+
+});
+
+btn.nextElementSibling
+.style.display =
+"flex";
+
+}
+
+//////////////////////////////////////////////////
+// FECHAR MENU
+
+window.onclick = () => {
+
+document
+.querySelectorAll(".dropdown")
+.forEach(d => {
+
+d.style.display =
+"none";
+
+});
+
+};
+
+//////////////////////////////////////////////////
+// ABRIR GRUPO
+
+
+
+
+//////////////////////////////////////////////////
+// ABRIR MODAL
+
+createBtn.onclick = () => {
+
+modal.style.display =
+"flex";
+
+};
+
+//////////////////////////////////////////////////
+// SALVAR
+
+saveGroupBtn.onclick =
+async () => {
+
+const nome =
+nomeGrupo.value.trim();
+
+if(nome === "") return;
+
+//////////////////////////////////////////////////
+// LIMITE
+
+const meus =
+await db.collection("grupos")
+.where(
+"dono",
+"==",
+currentUser.email
+)
+.get();
+
+if(
+meus.size >= 3 &&
+!editando
+){
+
+alert(
+"Você só pode criar 3 grupos"
+);
+
+return;
+
+}
+
+//////////////////////////////////////////////////
+// DADOS
+
+const dados = {
+
+nome:nome,
+
+descricao:
+descGrupo.value,
+
+foto:
+fotoGrupo.value,
+
+dono:
+currentUser.email,
+
+membros:[
+currentUser.email
+]
+
+};
+
+//////////////////////////////////////////////////
+// EDITAR
+
+if(editando){
+
+await db.collection("grupos")
+.doc(editando)
+.update(dados);
+
+editando = null;
+
+}else{
+
+await db.collection("grupos")
+.add(dados);
+
+}
+
+//////////////////////////////////////////////////
+// FECHAR
+
+modal.style.display =
+"none";
+
+nomeGrupo.value = "";
+
+descGrupo.value = "";
+
+fotoGrupo.value = "";
+
+carregar();
+
+};
+
+//////////////////////////////////////////////////
+// EDITAR GRUPO
+
+async function editarGrupo(id){
+
+const doc =
+await db.collection("grupos")
+.doc(id)
+.get();
+
+const grupo =
+doc.data();
+
+editando = id;
+
+modal.style.display =
+"flex";
+
+nomeGrupo.value =
+grupo.nome;
+
+descGrupo.value =
+grupo.descricao;
+
+fotoGrupo.value =
+grupo.foto;
+
+}
+
+//////////////////////////////////////////////////
+// APAGAR
+
+async function apagarGrupo(id){
+
+const ok =
+confirm(
+"Apagar grupo?"
+);
+
+if(!ok) return;
+
+await db.collection("grupos")
+.doc(id)
+.delete();
+
+carregar();
+
+}
+
+//////////////////////////////////////////////////
+// SAIR
+
+async function sairGrupo(id){
+
+await db.collection("grupos")
+.doc(id)
+.update({
+
+membros:
+firebase.firestore
+.FieldValue
+.arrayRemove(
+currentUser.email
+)
+
+});
+
+carregar();
+
+}
+
+//////////////////////////////////////////////////
+// REMOVER
+
+async function removerPessoa(id){
+
+const gmail =
+prompt(
+"Gmail da pessoa:"
+);
+
+if(!gmail) return;
+
+await db.collection("grupos")
+.doc(id)
+.update({
+
+membros:
+firebase.firestore
+.FieldValue
+.arrayRemove(gmail)
+
+});
+
+alert(
+"Pessoa removida"
+);
+
+}
+
+//////////////////////////////////////////////////
+// LINK
+
+function gerarLink(id){
+
+const link =
+
+window.location.origin +
+
+window.location.pathname +
+
+"?grupo=" +
+
+id;
+
+navigator.clipboard.writeText(
+link
+);
+
+alert(
+"Link copiado:\n\n" +
+link
+);
+
+}
+</script>
+
+<script>
+
+  async function abrirGrupo(id){
+
+  try{
+
+    // PEGA GRUPO
+
+    const grupoDoc =
+    await db.collection("grupos")
+    .doc(id)
+    .get();
+
+    const grupo =
+    grupoDoc.data();
+
+    // SE NÃO USA TAREFAS
+   if(
+grupo.usarTarefas !== "sim"
+||
+
+!grupo.linkTarefa
+){
+
+localStorage.setItem(
+"chatNome",
+id
+);
+
+window.location.href =
+"chat.html";
+
+return;
+
+}
+    // PEGA TAREFAS DO GRUPO
+
+    const tarefasSnap =
+    await db.collection("tarefas")
+
+    .where("grupo","==",grupo.nome)
+
+    .get();
+
+    // CONCLUÍDAS
+
+    const concluidasSnap =
+    await db
+
+    .collection("usuarios")
+
+    .doc(currentUser.uid)
+
+    .collection("concluidas")
+
+    .get();
+
+    let tarefas = [];
+
+    tarefasSnap.forEach(doc => {
+
+      tarefas.push(doc.id);
+
+    });
+
+    let concluidas = 0;
+
+    concluidasSnap.forEach(doc => {
+
+      if(
+        tarefas.includes(doc.id)
+      ){
+
+        concluidas++;
+
+      }
+
+    });
+
+    const total =
+    tarefas.length;
+
+    let progresso = 0;
+
+    if(total > 0){
+
+      progresso = Math.round(
+        (concluidas / total) * 100
+      );
+
+    }
+
+    // BLOQUEAR
+
+  if(progresso < 100){
+
+if(grupo.linkTarefa){
+
+window.location.href =
+grupo.linkTarefa;
+
+}else{
+
+alert(
+"Link da tarefa não encontrado"
+);
+
+}
+
+return;
+
+}
+    // ENTRAR CHAT
+
+    localStorage.setItem(
+      "chatNome",
+      id
+    );
+
+    window.location.href =
+    "chat.html";
+}
+catch(error){
+
+console.error(error);
+
+alert(
+error.message
+);
+
+}
+}
+</script>
+
+</body>
+</html>

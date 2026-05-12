@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html>
+
+<head>
+    
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Metatags Open Graph -->
+    <meta property="og:title" content="Comunidade Sempre Online">
+    <meta property="og:description" content="Comunidade Sempre Online.">
+    <meta property="og:image" content="icong.png"> <!-- URL completo da imagem -->
+    <meta property="og:url" content="https://tubular-tiramisu-9e3fe4.netlify.app"> <!-- URL completo da sua página -->
+    <meta property="og:type" content="website">
+
+    <title>Comunidade sempre Oline</title>
+</head>
+
+<body class="centralize">
+    <form>
+        <div class="form-field">
+            <div><label>Email</label></div>
+            <input type="email" name="email" id="email" placeholder="seu@email.com" onchange="onChangeEmail()"/>
+            <div class="error" id="email-required-error">Email é obrigatório</div>
+            <div class="error" id="email-invalid-error">Email é inválido</div>
+        </div>
+        <div class="form-field">
+            <div><label>Senha</label></div>
+            <input type="password" name="password" id="password" placeholder="Senha" onchange="onChangePassword()"/>
+            <div class="error" id="password-required-error">Senha é obrigatória</div>
+        </div>
+        <div>
+            <button type="button" class="clear" id="recover-password-button" onclick="recoverPassword()" disabled="true">Recuperar senha</button>
+        </div>
+        <div>
+            <button type="button" class="solid" id="login-button" disabled="true" onclick="login()">Entrar</button>
+        </div>
+        <div>
+            <button type="button" class="outline" onclick="register()">Registrar</button>
+        </div>
+    </form>
+</body>
+
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="global.css">
+
+<script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
+<script src="fr.js"></script>
+
+<script src="index.js"></script>
+<script src="validations.js"></script>
+<script src="loading.js"></script>
+
+</html>

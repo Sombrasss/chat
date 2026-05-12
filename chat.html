@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <title>Chat</title>
+
+  <style>
+
+        *{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#f0f2f5;
+  font-family:Arial,sans-serif;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* TOPO */
+
+.topbar{
+  background:white;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid #ddd;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:1000;
+}
+
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.back-btn{
+  font-size:24px;
+  color:#1877f2;
+  cursor:pointer;
+}
+
+.chat-photo{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.chat-info h3{
+  font-size:16px;
+  color:#111;
+}
+
+.status{
+  color:#31a24c;
+  font-size:13px;
+}
+
+/* MENSAGENS */
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:85px 12px 100px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.message-box{
+  display:flex;
+  gap:8px;
+  max-width:85%;
+  animation:fade 0.2s ease;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.message-box.sent{
+  align-self:flex-end;
+  flex-direction:row-reverse;
+}
+
+.message-box.received{
+  align-self:flex-start;
+}
+
+.message-avatar{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.message-content{
+  background:white;
+  padding:10px 14px;
+  border-radius:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  word-break:break-word;
+}
+
+.sent .message-content{
+  background:#1877f2;
+  color:white;
+}
+
+.sender-name{
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:4px;
+}
+
+.message-text{
+  font-size:15px;
+  line-height:1.4;
+}
+
+.message-time{
+  font-size:11px;
+  margin-top:5px;
+  opacity:0.7;
+  text-align:right;
+}
+
+/* IMAGENS */
+
+.message-content img,
+.message-content video{
+  width:230px;
+  max-width:100%;
+  border-radius:14px;
+  margin-top:8px;
+}
+
+/* ÁUDIO */
+
+audio{
+  width:230px;
+  margin-top:8px;
+}
+
+/* ENVIAR */
+
+    .send-area{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  padding:8px 10px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  border-top:1px solid #ddd;
+  z-index:1000;
+}
+
+/* INPUT */
+
+.send-area input{
+  flex:1;
+  background:#f0f2f5;
+  border:none;
+  outline:none;
+  padding:12px 16px;
+  border-radius:30px;
+  font-size:16px;
+  min-width:0;
+}
+
+/* BOTÕES */
+
+.send-btn{
+  width:42px;
+  height:42px;
+  min-width:42px;
+  border:none;
+  border-radius:50%;
+  background:#1877f2;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:0.2s;
+  flex-shrink:0;
+}
+
+.send-btn:active{
+  transform:scale(0.92);
+}
+
+/* BOTÃO ENVIAR */
+
+#sendBtn{
+  background:#0084ff;
+  font-size:20px;
+}
+
+/* MICROFONE */
+
+#recordBtn.recording{
+  background:red !important;
+  }
+    
+    body{
+  padding-bottom:75px;
+}
+
+/* PREVIEW */
+
+#previewContainer{
+  position:fixed;
+  bottom:90px;
+  left:10px;
+  z-index:999;
+}
+
+#previewImage{
+  width:120px;
+  border-radius:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* LOADING */
+
+.loading{
+  opacity:0.7;
+  pointer-events:none;
+}
+
+/* BARRA */
+
+#uploadBar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:0%;
+  height:4px;
+  background:#1877f2;
+  transition:0.2s;
+  z-index:9999;
+    }
+  </style>
+
+</head>
+
+<body>
+
+
+
+  <div id="previewContainer"
+
+style="
+position:fixed;
+bottom:80px;
+left:10px;
+display:none;
+z-index:999;
+">
+
+<img
+id="previewImage"
+
+style="
+width:120px;
+border-radius:12px;
+border:2px solid #28a745;
+">
+
+  </div><div id="uploadBar"
+
+style="
+position:fixed;
+bottom:0;
+left:0;
+width:0%;
+height:5px;
+background:#28a745;
+transition:0.2s;
+z-index:9999;
+">
+
+  </div>
+
+  <!-- TOPO -->
+
+  <div class="topbar">
+
+    <div class="top-left">
+
+      <div
+      class="back-btn"
+      onclick="voltar()">
+        ←
+      </div>
+
+      <img
+      class="chat-photo"
+      src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+      <div class="chat-info">
+
+        <h3 id="chatName">
+          Chat
+        </h3>
+
+        <div class="status">
+          Online
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MENSAGENS 03 -->
+
+  <div
+  class="messages"
+  id="messages">
+  </div>
+
+  <!-- ENVIAR -->
+
+  <div class="send-area">
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+style="display:none">
+
+<button
+class="send-btn"
+id="imageBtn">
+
+🖼️
+
+</button>
+
+
+    <input
+type="file"
+id="fileInput"
+style="display:none">
+
+<button
+class="send-btn"
+id="fileBtn">
+
+📎
+
+</button>
+  <input
+  type="text"
+  id="messageInput"
+  placeholder="Mensagem...">
+
+
+
+    
+  <!-- AUDIO -->
+
+  <button
+  class="send-btn"
+  id="recordBtn">
+
+    🎤
+
+  </button>
+
+  <!-- ENVIAR -->
+
+  <button
+  class="send-btn"
+  id="sendBtn">
+
+    ➤
+
+  </button>
+
+  </div>
+
+  <!-- FIREBASE 04 -->
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- CONFIG FIREBASE -->
+
+  <script src="fr.js"></script>
+
+  <script>
+
+    // TESTE
+
+    console.log("Chat carregado");
+
+    // FIREBASE
+
+    const auth =
+    firebase.auth();
+
+    // USER
+
+    let currentUser;
+
+// CHAT ID
+
+const chatId =
+localStorage.getItem("chatNome")
+|| "chat_global";
+
+// MOSTRAR NOME DO GRUPO
+
+async function carregarNomeGrupo(){
+
+  try{
+
+    const grupoDoc =
+    await db
+    .collection("grupos")
+    .doc(chatId)
+    .get();
+
+    if(grupoDoc.exists){
+
+      const grupo =
+      grupoDoc.data();
+
+      document
+      .getElementById("chatName")
+      .innerText =
+      grupo.nome || "Grupo";
+
+    }else{
+
+      document
+      .getElementById("chatName")
+      .innerText =
+      "Grupo";
+
+    }
+
+  }catch(error){
+
+    console.log(error);
+
+    document
+    .getElementById("chatName")
+    .innerText =
+    "Grupo";
+
+  }
+
+}
+
+    // LOGIN
+
+    auth.onAuthStateChanged(user => {
+
+      if(!user){
+
+        window.location.href =
+        "index1.html";
+
+        return;
+
+      }
+
+      currentUser = user;
+
+carregarNomeGrupo();
+      
+      carregarMensagens();
+
+    });
+
+    // BOTAO
+
+    document
+    .getElementById("sendBtn")
+
+    .addEventListener("click",
+
+    sendMessage);
+
+    // ENVIAR
+
+    async function sendMessage(){
+
+      try{
+
+        const input =
+        document.getElementById("messageInput");
+
+        const texto =
+        input.value.trim();
+
+        if(texto === "") return;
+
+        await db.collection("mensagens")
+        .add({
+
+          chatId: chatId,
+
+          texto: texto,
+
+          nome:
+          currentUser.displayName ||
+          currentUser.email,
+
+          foto:
+          currentUser.photoURL ||
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
+          uid:
+          currentUser.uid,
+
+          hora:
+          new Date().toISOString()
+
+        });
+
+        input.value = "";
+
+      }catch(error){
+
+        console.log(error);
+
+        alert(error.message);
+
+      }
+
+    }
+
+    // CARREGAR 05
+
+    function carregarMensagens(){
+
+  db.collection("mensagens")
+
+  .where("chatId", "==", chatId)
+
+  .orderBy("hora", "asc")
+
+  .onSnapshot(snapshot => {
+
+    const messages =
+    document.getElementById("messages");
+
+    messages.innerHTML = "";
+
+    snapshot.forEach(doc => {
+
+      const data =
+      doc.data();
+
+      criarMensagem(data, doc.id);
+
+    });
+
+    messages.scrollTop =
+    messages.scrollHeight;
+
+  });
+
+    }
+    // CRIAR MSG 06
+
+    
+          function criarMensagem(data, id){
+
+  const messages =
+  document.getElementById("messages");
+
+  const isMe =
+  data.uid === currentUser.uid;
+
+  const div =
+  document.createElement("div");
+
+  div.className =
+  `message-box ${isMe ? "sent" : "received"}`;
+
+  const hora =
+  new Date(data.hora)
+  .toLocaleTimeString([],{
+    hour:'2-digit',
+    minute:'2-digit'
+  });
+
+  div.innerHTML = `
+
+    <img
+    class="message-avatar"
+    src="${data.foto}">
+
+    <div class="message-content">
+
+      <div class="sender-name">
+
+        ${data.nome}
+
+      </div>
+
+      ${
+        data.texto
+        ?
+
+        `
+        <div class="message-text">
+
+          ${data.texto}
+
+        </div>
+        `
+
+        :
+
+        ""
+      }
+
+      ${
+        data.imagem
+        ?
+
+        `
+        <img
+        src="${data.imagem}"
+
+        style="
+          width:220px;
+          border-radius:12px;
+          margin-top:8px;
+        ">
+        `
+
+        :
+
+        ""
+      }
+
+${
+  data.arquivo
+  ?
+
+  `
+  
+  ${
+    data.arquivoTipo.startsWith("video")
+
+    ?
+
+    `
+    <video controls
+    style="
+      width:220px;
+      border-radius:12px;
+      margin-top:8px;
+    ">
+
+      <source
+      src="${data.arquivo}">
+
+    </video>
+    `
+
+    :
+
+    `
+    <a
+    href="${data.arquivo}"
+    target="_blank"
+
+    style="
+      display:block;
+      background:#222;
+      color:white;
+      padding:12px;
+      border-radius:12px;
+      margin-top:8px;
+      text-decoration:none;
+    ">
+
+      📄 ${data.arquivoNome}
+
+    </a>
+    `
+  }
+
+  `
+
+  :
+
+  ""
+}
+
+      ${
+        data.audio
+        ?
+
+        `
+        <audio controls
+        style="
+          width:220px;
+          margin-top:8px;
+        ">
+
+          <source
+          src="${data.audio}"
+          type="audio/webm">
+
+        </audio>
+        `
+
+        :
+
+        ""
+      }
+
+
+
+${
+  isMe
+  ?
+
+  `
+  <div
+  onclick="apagarMensagem('${id}')"
+
+  style="
+    color:red;
+    font-size:12px;
+    margin-top:8px;
+    cursor:pointer;
+  ">
+
+    Apagar
+
+  </div>
+  `
+
+  :
+
+  ""
+}
+      <div class="message-time">
+
+        ${hora}
+
+      </div>
+
+    </div>
+
+  `;
+
+  messages.appendChild(div);
+
+          }
+
+
+    
+
+    
+      
+      
+    // ENTER 07
+
+    document
+    .getElementById("messageInput")
+
+    .addEventListener("keypress",
+
+    function(e){
+
+      if(e.key === "Enter"){
+
+        sendMessage();
+
+      }
+
+    });
+
+    // VOLTAR
+
+    function voltar(){
+
+      window.location.href =
+      "grupos.html";
+
+    }
+
+
+
+// ARQUIVOS 08
+
+const fileBtn =
+document.getElementById("fileBtn");
+
+const fileInput =
+document.getElementById("fileInput");
+
+// ABRIR
+
+fileBtn.addEventListener("click", () => {
+
+  fileInput.click();
+
+});
+
+// ENVIAR
+
+fileInput.addEventListener("change",
+
+async () => {
+
+  const file =
+  fileInput.files[0];
+
+if(!file) return;
+
+const maxSize =
+20 * 1024 * 1024;
+
+if(file.size > maxSize){
+
+  alert("Arquivo muito grande");
+
+  return;
+
+}
+
+  // FORM DATA 09
+
+  const formData =
+  new FormData();
+
+  formData.append(
+    "file",
+    file
+  );
+
+  formData.append(
+    "upload_preset",
+    "audios"
+  );
+
+  // ESCOLHER TIPO
+
+  let urlUpload =
+  "https://api.cloudinary.com/v1_1/ddub960pg/auto/upload";
+
+  // UPLOAD
+
+  const resposta =
+  await fetch(urlUpload, {
+
+    method:"POST",
+
+    body:formData
+
+  });
+
+  const dados =
+  await resposta.json();
+
+  // FIRESTORE
+
+  await db.collection("mensagens")
+  .add({
+
+    chatId: chatId,
+
+    arquivo:
+    dados.secure_url,
+
+    arquivoNome:
+    file.name,
+
+    arquivoTipo:
+    file.type,
+
+    nome:
+    currentUser.displayName ||
+    currentUser.email,
+
+    foto:
+    currentUser.photoURL ||
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
+    uid:
+    currentUser.uid,
+
+    hora:
+    new Date().toISOString()
+
+  });
+
+});
+
+// Audio 10
+
+let mediaRecorder;
+
+let audioChunks = [];
+
+let gravando = false;
+
+const recordBtn =
+document.getElementById("recordBtn");
+
+// MICROFONE
+
+recordBtn.addEventListener("click",
+
+async () => {
+
+  // PARAR
+
+  if(gravando){
+
+    mediaRecorder.stop();
+
+    gravando = false;
+
+    recordBtn.classList.remove(
+      "recording"
+    );
+
+    recordBtn.innerHTML =
+    "🎤";
+
+    return;
+
+  }
+
+  // INICIAR
+
+  const stream =
+  await navigator.mediaDevices
+
+  .getUserMedia({
+    audio:true
+  });
+
+  mediaRecorder =
+  new MediaRecorder(stream);
+
+  audioChunks = [];
+
+  mediaRecorder.start();
+
+  gravando = true;
+
+  recordBtn.classList.add(
+    "recording"
+  );
+
+  recordBtn.innerHTML =
+  "⏹️";
+
+  // PEGAR AUDIO 11
+
+  mediaRecorder.ondataavailable =
+  event => {
+
+    audioChunks.push(event.data);
+
+  };
+
+  // FINALIZAR
+
+  mediaRecorder.onstop =
+  async () => {
+
+    const audioBlob =
+    new Blob(audioChunks,{
+      type:"audio/webm"
+    });
+
+    // FORM DATA
+
+    const formData =
+    new FormData();
+
+    formData.append(
+      "file",
+      audioBlob
+    );
+
+    formData.append(
+      "upload_preset",
+      "audios"
+    );
+
+    // CLOUDINARY
+
+    const resposta =
+    await fetch(
+
+      "https://api.cloudinary.com/v1_1/ddub960pg/video/upload",
+
+      {
+
+        method:"POST",
+
+        body:formData
+
+      }
+
+    );
+
+    const dados =
+    await resposta.json();
+
+    const audioUrl =
+    dados.secure_url;
+
+    // FIRESTORE
+
+    await db.collection("mensagens")
+    .add({
+
+      chatId: chatId,
+
+      audio:
+      audioUrl,
+
+      nome:
+      currentUser.displayName ||
+      currentUser.email,
+
+      foto:
+      currentUser.photoURL ||
+      "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
+      uid:
+      currentUser.uid,
+
+      hora:
+      new Date().toISOString()
+
+    });
+
+  };
+
+});
+
+
+  // IMAGEM
+
+const imageBtn =
+document.getElementById("imageBtn");
+
+const imageInput =
+document.getElementById("imageInput");
+
+// ABRIR GALERIA 12
+
+imageBtn.addEventListener("click", () => {
+
+  imageInput.click();
+
+});
+
+// ENVIAR IMAGEM
+
+
+imageInput.addEventListener("change",
+
+async () => {
+
+  const file =
+  imageInput.files[0];
+
+  if(!file) return;
+
+  // PREVIEW
+
+  const preview =
+  document.getElementById(
+    "previewContainer"
+  );
+
+  const previewImage =
+  document.getElementById(
+    "previewImage"
+  );
+
+  preview.style.display =
+  "block";
+
+  previewImage.src =
+  URL.createObjectURL(file);
+
+  // LIMITE
+
+  const maxSize =
+  20 * 1024 * 1024;
+
+  if(file.size > maxSize){
+
+    alert("Imagem muito grande");
+
+    return;
+
+  }
+
+  // LOADING 13
+
+  document.body.classList.add(
+    "loading"
+  );
+
+  const uploadBar =
+  document.getElementById(
+    "uploadBar"
+  );
+
+  uploadBar.style.width =
+  "30%";
+
+  const formData =
+  new FormData();
+
+  formData.append(
+    "file",
+    file
+  );
+
+  formData.append(
+    "upload_preset",
+    "audios"
+  );
+
+  uploadBar.style.width =
+  "60%";
+
+  const resposta =
+  await fetch(
+
+    "https://api.cloudinary.com/v1_1/ddub960pg/image/upload",
+
+    {
+
+      method:"POST",
+
+      body:formData
+
+    }
+
+  );
+
+  uploadBar.style.width =
+  "90%";
+
+  const dados =
+  await resposta.json();
+
+  const imageUrl =
+  dados.secure_url;
+
+  await db.collection("mensagens")
+  .add({
+
+    chatId: chatId,
+
+    imagem:imageUrl,
+
+    nome:
+    currentUser.displayName ||
+    currentUser.email,
+
+    foto:
+    currentUser.photoURL ||
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
+    uid:
+    currentUser.uid,
+
+    hora:
+    new Date().toISOString()
+
+  });
+
+  // FINALIZAR
+
+  uploadBar.style.width =
+  "100%";
+
+  setTimeout(() => {
+
+    uploadBar.style.width =
+    "0%";
+
+    preview.style.display =
+    "none";
+
+    document.body.classList.remove(
+      "loading"
+    );
+
+  }, 700);
+
+});
+
+
+
+async function apagarMensagem(id){
+
+  const confirmar =
+  confirm("Apagar mensagem?");
+
+  if(!confirmar) return;
+
+  try{
+
+  await db
+  .collection("mensagens")
+  .doc(id)
+  .delete();
+
+}catch(error){
+
+  console.log(error);
+
+  alert("Erro ao apagar");
+
+}
+} 
+    
+
+  </script>
+
+</body>
+</html>

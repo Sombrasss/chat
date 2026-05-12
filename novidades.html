@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+<!-- Metatags Open Graph -->
+    <meta property="og:title" content="Comunidade Sempre Online">
+    <meta property="og:description" content="Comunidade Sempre Online.">
+    <meta property="og:image" content="icong.png"> <!-- URL completo da imagem -->
+    <meta property="og:url" content="https://tubular-tiramisu-9e3fe4.netlify.app"> <!-- URL completo da sua página -->
+    <meta property="og:type" content="website">
+
+
+  
+  <title>Trailers </title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subinfo {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 30px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .video-card {
+      background-color: #222;
+      padding: 15px;
+      border-radius: 10px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    .video-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px #0f0;
+    }
+    .video-card iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .info h2 {
+      font-size: 18px;
+      margin: 5px 0;
+    }
+    .info p {
+      font-size: 14px;
+      color: #ccc;
+      margin: 0;
+    }
+    .buttons {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .btn-assistir {
+      background-color: #28a745;
+    }
+    .btn-assistir:hover {
+      background-color: #218838;
+    }
+    .btn-trailer {
+      background-color: #007bff;
+    }
+    .btn-trailer:hover {
+      background-color: #0056b3;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #444;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 10px 0 20px;
+    }
+    .progress {
+      height: 10px;
+      background-color: #0f0;
+      width: 0%;
+      transition: width 0.5s;
+    }
+    .viewer-counter {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .rating {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .rating span {
+      font-size: 18px;
+      color: #ff0;
+    }
+    .tags {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #88f;
+    }
+    .comments {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #aaa;
+      font-style: italic;
+    }
+    .recommendation {
+      text-align: center;
+      margin-top: 30px;
+      color: #ccc;
+    }
+
+    @media (max-width: 500px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<script src="navbar.js"></script>
+<h1> Trailers</h1>
+<div class="subinfo" id="totalViewers"></div>
+<div class="progress-bar"><div class="progress" id="progress"></div></div>
+
+<div class="grid">
+  <!-- Adicione aqui os seus .video-card conforme já fez -->
+  <!-- Exemplo de um card (copie os outros que você já fez): -->
+  
+  
+
+  <!-- 1 -->
+<div class="video-card" data-rating="3">
+  <div class="viewer-counter" data-base="100">↪ 100 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/NOR4aX6q7so?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>Nao Se Mexa</h2>
+    <p>Data: 2023</p>
+    <p></p>
+    <div class="tags">#Filme</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=DzqOEAKEwzJgsnS2FfgN"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=DzqOEAKEwzJgsnS2FfgN"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+  
+   <!-- 2 -->
+  
+<div class="video-card" data-rating="5">
+  <div class="viewer-counter" data-base="112">↪ 112 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/6FNyGVadKmM?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>Nao Fale o Mal</h2>
+    <p>Data: 2022</p>
+    <p></p>
+    <div class="tags">#Filme</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=2dtAHyTOAigjGno5MULS"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=2dtAHyTOAigjGno5MULS"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+  
+   <!-- 3 -->
+  
+<div class="video-card" data-rating="5">
+  <div class="viewer-counter" data-base="261">↪ 261 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/-porOFgavus?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>Armadilha</h2>
+    <p>Data: 2024 </p>
+    <p></p>
+    <div class="tags">#Filme</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=B2FUhGOaSg00AaJkB9nb"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=B2FUhGOaSg00AaJkB9nb"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+  
+  
+   <!-- 4 -->
+<div class="video-card" data-rating="4">
+  <div class="viewer-counter" data-base="100">↪ 100 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/Zh8Ynh4nw64?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>O Culpado</h2>
+    <p>Data: 2021</p>
+    <p></p>
+    <div class="tags">#Filme</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=0tg6kv3pZxC1lHbPBKVv"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=0tg6kv3pZxC1lHbPBKVv"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+   <!-- 5 -->
+  <div class="video-card" data-rating="5">
+  <div class="viewer-counter" data-base="100">↪ 100 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/0LhJza9IVMc?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>Treta</h2>
+    <p>Data:2023</p>
+    <p></p>
+    <div class="tags">#Série</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=SD7qSLHw6f5RDyGZBgHF"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=SD7qSLHw6f5RDyGZBgHF"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+  
+   <!-- 6 -->
+
+
+
+<div class="video-card" data-rating="4">
+  <div class="viewer-counter" data-base="100">↪ 100 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/BKSQ4HB455o?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>O Gambito da Rainha</h2>
+    <p>Data: 2020</p>
+    <p></p>
+    <div class="tags">#Minissérie</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=z7ri12ggR1Kg9Cm8AEr2"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=z7ri12ggR1Kg9Cm8AEr2"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+
+
+
+
+   <!-- 7 -->
+
+
+<div class="video-card" data-rating="3">
+  <div class="viewer-counter" data-base="89">↪ 89 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/dw-ctKC7xkU?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>O Fabricante de Lagrimas</h2>
+    <p>Data: 2024</p>
+    <p></p>
+    <div class="tags">#Filme</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=x9jtQ3CBzOkfVTxwNICZ"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=x9jtQ3CBzOkfVTxwNICZ"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+
+
+
+
+
+
+  
+   <!-- 8 -->
+
+<div class="video-card" data-rating="4">
+  <div class="viewer-counter" data-base="100">↪ 100 assistindo</div>
+  <iframe class="trailer-video" src="https://www.youtube.com/embed/gyd3X62IcEM?enablejsapi=1" allowfullscreen></iframe>
+  <div class="info">
+    <h2>Atraves da Minha Janela</h2>
+    <p>Data: 2022</p>
+    <p></p>
+    <div class="tags">#Filme</div>
+  </div>
+  <div class="buttons">
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/trailer.html?id=6tlq1AX2UyXdZGTI4iEh"><button class="btn btn-assistir">Assistir</button></a>
+    <a href="https://incomparable-cupcake-1fa3e6.netlify.app/assistir.html?id=6tlq1AX2UyXdZGTI4iEh"><button class="btn btn-trailer">Trailer</button></a>
+  </div>
+  <div class="rating"></div>
+  <div class="comments">“”</div>
+</div>
+
+  
+   <!-- 9 -->
+
+
+
+
+  
+   <!-- 10 -->
+
+
+
+  
+   <!-- 11 -->
+
+
+
+
+
+
+  
+   <!-- 12 -->
+
+
+
+  
+   <!-- 13 -->
+
+
+
+
+
+  
+   <!-- 14 -->
+
+
+
+
+
+  
+   <!-- 15 -->
+  
+  
+  
+</div>
+
+<div class="recommendation">
+  🔁 Se gostou de The Dark Knight, talvez goste de <strong>Joker</strong> (2019).
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+  let players = [];
+  let viewedCount = 0;
+
+  function updateProgress() {
+    const total = players.length;
+    const percent = Math.min((viewedCount / total) * 100, 100);
+    document.getElementById("progress").style.width = percent + "%";
+  }
+
+  function updateFakeViewers() {
+    const counters = document.querySelectorAll('.viewer-counter');
+    let total = 0;
+    counters.forEach(counter => {
+      let base = parseInt(counter.getAttribute('data-base'));
+      let fluctuation = Math.floor(Math.random() * 10 - 5);
+      let newVal = base + fluctuation;
+      newVal = Math.max(0, newVal);
+      counter.innerText = `↪ ${newVal} assistindo`;
+      total += newVal;
+    });
+    document.getElementById("totalViewers").innerText = `${total} pessoas estão assistindo agora`;
+  }
+
+  setInterval(updateFakeViewers, 4000);
+
+  function applyRatings() {
+    const cards = document.querySelectorAll('.video-card');
+    cards.forEach(card => {
+      const ratingDiv = card.querySelector('.rating');
+      const rating = parseInt(card.getAttribute('data-rating'));
+      ratingDiv.innerHTML = 'Avaliação: ';
+      for (let i = 1; i <= 5; i++) {
+        ratingDiv.innerHTML += `<span>${i <= rating ? '★' : '☆'}</span>`;
+      }
+    });
+  }
+
+  applyRatings();
+
+  function onYouTubeIframeAPIReady() {
+    const iframes = document.querySelectorAll('.trailer-video');
+    iframes.forEach((iframe) => {
+      const player = new YT.Player(iframe, {
+        events: {
+          onStateChange: (event) => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              pauseOthers(event.target);
+              if (!event.target.hasViewed) {
+                event.target.hasViewed = true;
+                viewedCount++;
+                updateProgress();
+              }
+            }
+          }
+        }
+      });
+      players.push(player);
+    });
+  }
+
+  function pauseOthers(currentPlayer) {
+    players.forEach(player => {
+      if (player !== currentPlayer) {
+        player.pauseVideo();
+      }
+    });
+  }
+</script>
+
+
+
+
+<div style="position: relative; width: 100%; padding-top: 56.25%; /* Proporção 16:9 */">
+  <iframe allowfullscreen="true" src="https://heroianime.blogspot.com" 
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;">
+  </iframe>
+  <!-- Camada bloqueadora -->
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;"></div>
+</div>
+
+
+<div style="position: relative; width: 100%; padding-top: 56.25%; /* Proporção 16:9 */">
+  <iframe allowfullscreen="true" src="https://sombrasss.github.io/Tud/vida.html" 
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;">
+  </iframe>
+  <!-- Camada bloqueadora -->
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;"></div>
+</div>
+
+ 
+</body>
+</html>

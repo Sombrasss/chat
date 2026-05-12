@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    background: #121212; /* fundo preto moderno */
+    color: #ffffff;       /* texto branco */
+    font-family: Arial, sans-serif;
+}
+
+header {
+    text-align: right;
+    padding: 10px;
+}
+header button {
+    width: auto;
+}
+
+.centralize {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-field {
+    margin-bottom: 10px;
+}
+
+input,
+button,
+select {
+   padding: 10px;
+   width: -webkit-fill-available;
+   background-color: #1e1e1e;
+   color: #ffffff;
+   border: 1px solid #333;
+   border-radius: 4px;
+}
+input[type="radio"] {
+    width: auto;
+}
+
+.loading {
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 999;
+}
+.loading label {
+    font-size: 24px;
+    color: white;
+}
+
+button {
+    cursor: pointer;
+    transition: background 0.3s, opacity 0.3s;
+}
+button:active {
+    opacity: 0.8;
+}
+button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button.fab {
+    width: 54px;
+    height: 54px;
+    border-radius: 50px;
+    border: none;
+    font-size: 24px;
+    background-color: #1e1e1e;
+    color: white;
+    box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.1);
+}
+button.fab.fixed {
+    position: fixed;
+}
+button.fab.bottom {
+    bottom: 32px;
+}
+button.fab.right {
+    right: 32px;
+}
+
+.clear {
+    background: transparent;
+    border: none;
+    color: white;
+}
+.solid {
+    background: #2dd36f;
+    border: none;
+    color: black;
+}
+.outline {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+}
+.outline.danger {
+    color: red;
+    border-color: red;
+}
+
+.error {
+    background: red;
+    color: white;
+    display: none;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 10px;
+}

@@ -1,0 +1,295 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Metatags Open Graph -->
+    <meta property="og:title" content="Comunidade Sempre Online">
+    <meta property="og:description" content="Comunidade Sempre Online.">
+    <meta property="og:image" content="icong.png"> <!-- URL completo da imagem -->
+    <meta property="og:url" content="https://tubular-tiramisu-9e3fe4.netlify.app"> <!-- URL completo da sua página -->
+    <meta property="og:type" content="website">
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sempre Online">
+<link rel="apple-touch-icon" href="icong.png">
+
+
+
+
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="iconp.png" type="image/x-icon">
+      <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="black"/>
+    <!-- /manifest -->
+  
+  
+  <p id="manualInstall" style="display:none; color: #aaa; font-size: 14px;">
+  No computador, clique no ícone de instalação no canto da barra de endereço para instalar o aplicativo.
+</p>
+
+  <title>Comunidade Sempre Online</title>
+    <style>
+
+
+
+/* BOTÃO CHAT */
+
+#chatBtn{
+
+position:fixed;
+
+bottom:10px;
+
+right:25px;
+
+width:65px;
+
+height:65px;
+
+border:none;
+
+border-radius:50%;
+
+background:linear-gradient(
+45deg,
+#28a745,
+#00d26a
+);
+
+color:white;
+
+font-size:28px;
+
+cursor:pointer;
+
+z-index:9999;
+
+box-shadow:
+0 0 20px rgba(40,167,69,0.5);
+
+transition:0.3s;
+
+}
+
+#chatBtn:hover{
+
+transform:scale(1.1);
+
+box-shadow:
+0 0 30px rgba(40,167,69,0.8);
+
+}
+
+#chatBtn:active{
+
+transform:scale(0.95);
+
+}
+
+
+        
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #000; /* Fundo preto */
+            color: #fff; /* Cor do texto */
+            padding-top: 50px;
+        }
+        h1 {
+            color: #fff;
+        }
+       .button1, .button2, .button3, .button4,
+button.button1, button.button2, button.button3, button.button4 {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 18px;
+    border-radius: 50px; /* Borda circular */
+    text-decoration: none;
+    color: #fff;
+    border: 2px solid #4CAF50; /* Cor da borda */
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    transition: background-color 0.3s, box-shadow 0.3s;
+    animation: moveButton 2s infinite alternate; /* Movimento dos botões */
+    background: transparent; /* Corrige fundo branco */
+}
+
+        @keyframes moveButton {
+            from { transform: translateY(0); }
+            to { transform: translateY(10px); }
+        }
+        /* Efeitos arco-íris e brilho para cada botão */
+         .button1:hover {
+            background: linear-gradient(to right, #FF6B6B, #FFA06B);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #FFA06B; /* Adicionando brilho */
+        }
+        .button2:hover {
+            background: linear-gradient(to right, #A0E7FF, #6BFFB8);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #6BFFB8; /* Adicionando brilho */
+        }
+     .button3:hover {
+            background: linear-gradient(to right, #8A2BE2, #9400D3); /* Violeta */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #8A2BE2; /* Brilho violeta */
+        }
+        .button4:hover {
+            background: linear-gradient(to right, #FFD700, #FF4500); /* Arco-íris */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 20px #FFD900; /* Brilho */
+        }
+      
+
+
+  
+    </style>
+</head><body>
+    
+    
+    <script>
+  (function() {
+    const topBar = document.createElement('div')
+    topBar.style.display = 'flex'
+    topBar.style.flexWrap = 'wrap'
+    topBar.style.justifyContent = 'space-between'
+    topBar.style.alignItems = 'center'
+    topBar.style.padding = '10px'
+    topBar.style.background = '#1e1e1e'
+    topBar.style.position = 'fixed'
+    topBar.style.top = 0
+    topBar.style.left = 0
+    topBar.style.width = '100%'
+    topBar.style.zIndex = 9999
+    topBar.style.boxSizing = 'border-box'
+
+    const style = document.createElement('style')
+    style.innerHTML = `
+      .nice-btn {
+        padding: 10px 20px;
+        background: #00ffc8;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #000;
+        margin: 5px;
+        flex: 1 1 auto;
+        min-width: 100px;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+      .nice-btn:hover {
+        background: #00d6ac;
+        transform: scale(1.06);
+        box-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+      }
+    `
+    document.head.appendChild(style)
+
+    function criarBotao(texto, href) {
+      const btn = document.createElement('button')
+      btn.innerText = texto
+      btn.className = 'nice-btn'
+      btn.onclick = () => window.location.href = href
+      return btn
+    }
+
+    const btnHome = criarBotao('🏠 Home', 'home.html')
+    const btnMenu = criarBotao('📂 Menu', 'menu.html')
+
+    topBar.appendChild(btnHome)
+    topBar.appendChild(btnMenu)
+
+    document.body.appendChild(topBar)
+    document.body.style.paddingTop = '70px'
+  })();
+</script>
+    
+  <!-- load service worker -->
+    <script src="app.js"></script>
+    <!-- /load service worker -->
+  
+  
+  
+    <h1>Bem-vindo à comunidade sempre online</h1>
+    <a href="home1.html" class="button1">Assistir</a>
+    <a href="novidades.html" class="button2">Escolher o que assistir</a>
+  <button id="installPWA" class="button3">Instalar Aplicativo</button>
+
+    <a href="lista.html"  class="button4" >Menu Completo</a>
+    <p>Estamos sempre online para <a href="https://wa.me/+244951141121">ajudar</a></p>
+
+<!-- BOTÃO CHAT -->
+
+<button
+id="chatBtn"
+
+onclick="abrirChat()">
+
+💬
+
+</button>
+
+
+
+    
+<script>
+  let deferredPrompt;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    const installBtn = document.getElementById('installPWA');
+    const manualInstall = document.getElementById('manualInstall');
+    
+    installBtn.style.display = 'inline-block';
+    if (manualInstall) manualInstall.style.display = 'none'; // Oculta instrução
+
+    installBtn.addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuário aceitou instalar o app');
+          } else {
+            console.log('Usuário recusou instalar o app');
+          }
+          deferredPrompt = null;
+        });
+      }
+    });
+  });
+
+  // Se o evento nunca acontecer (ex: desktop), mostre a instrução manual após 5s
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        const manualInstall = document.getElementById('manualInstall');
+        if (manualInstall) manualInstall.style.display = 'block';
+      }
+    }, 5000);
+  });
+</script>
+<script>
+
+
+// ABRIR CHAT
+
+function abrirChat(){
+
+  window.location.href =
+
+  "https://incomparable-cupcake-1fa3e6.netlify.app/grupos.html";
+
+}
+
+    
+</script>
+
+</body>
+</html>
