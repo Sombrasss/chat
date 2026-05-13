@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>📈 CRASH - Aviator Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    body {
+      background: #0a001f;
+      color: #fff;
+      font-family: 'Press Start 2P', cursive;
+      text-align: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 10px;
+    }
+    .game {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(20,0,40,0.95);
+      border: 4px solid #00ffff;
+      border-radius: 15px;
+      padding: 20px;
+    }
+    .balance { font-size: 1.5rem; color: #00ff00; margin: 10px 0; }
+    canvas { 
+      width: 100%; 
+      height: 220px; 
+      background: #000; 
+      border: 2px solid #00ffff; 
+      border-radius: 10px; 
+      margin: 15px 0;
+    }
+    .multiplier {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #00ffff;
+      text-shadow: 0 0 20px #00ffff;
+      min-height: 60px;
+    }
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      font-family: inherit;
+      border-radius: 8px;
+    }
+    button {
+      background: #ff00ff;
+      color: white;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .cashout {
+      background: #00ff00;
+      color: black;
+      font-size: 1.4rem;
+      padding: 18px;
+    }
+    .history {
+      max-height: 180px;
+      overflow-y: auto;
+      background: #111;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: left;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <script src="navbar.js"></script>
+  <h1>📈 CRASH</h1>
+
+  <div class="game">
+    <div class="balance">💰 Saldo: <span id="saldoAtual">0</span> moedas</div>
+
+    <div class="multiplier" id="multi">x1.00</div>
+    <canvas id="graph" width="480" height="220"></canvas>
+
+    <input type="number" id="aposta" value="50" min="10" placeholder="Valor da Aposta">
+    
+    <button id="btnApostar" onclick="iniciarJogo()">🚀 APOSTAR</button>
+    <button id="btnRetirar" class="cashout" onclick="retirar()" style="display:none;">💰 RETIRAR AGORA</button>
+
+    <div id="status" style="margin:15px 0; font-size:1.1rem;"></div>
+
+    <h3>📜 Histórico</h3>
+    <div id="historico" class="history"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="fr.js"></script>
+
+  <script>
+    let usuarioAtual = null;
+    let jogoAtivo = false;
+    let multiplicador = 1;
+    let apostaAtual = 0;
+    let cashoutFeito = false;
+    let intervalo = null;
+    let ctx = null;
+
+    window.onload = () => {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          usuarioAtual = user;
+          carregarSaldo();
+        } else {
+          window.location.href = "login.html";
+        }
+      });
+      ctx = document.getElementById("graph").getContext("2d");
+    };
+
+    function carregarSaldo() {
+      db.collection("usuarios").doc(usuarioAtual.uid).get().then(doc => {
+        if (doc.exists) document.getElementById("saldoAtual").textContent = doc.data().saldo || 0;
+      });
+    }
+
+    function iniciarJogo() {
+      if (jogoAtivo) return;
+      apostaAtual = parseFloat(document.getElementById("aposta").value);
+      if (apostaAtual < 10) return alert("Aposta mínima: 10 moedas");
+
+      db.collection("usuarios").doc(usuarioAtual.uid).get().then(doc => {
+        const saldo = doc.data().saldo || 0;
+        if (saldo < apostaAtual) return alert("Saldo insuficiente!");
+
+        // Deduz aposta
+        db.collection("usuarios").doc(usuarioAtual.uid).update({ saldo: saldo - apostaAtual });
+
+        jogoAtivo = true;
+        cashoutFeito = false;
+        multiplicador = 1;
+
+        document.getElementById("btnApostar").style.display = "none";
+        document.getElementById("btnRetirar").style.display = "block";
+        document.getElementById("status").innerHTML = "🚀 O JOGO COMEÇOU!";
+
+        iniciarAnimacao();
+      });
+    }
+
+    function iniciarAnimacao() {
+      let tempo = 0;
+      let velocidade = 0.015;
+
+      intervalo = setInterval(() => {
+        tempo += 0.05;
+        multiplicador = Math.pow(1.025, tempo * 8); // curva realista
+
+        if (Math.random() < 0.008) { // Chance de crash
+          crash();
+          return;
+        }
+
+        document.getElementById("multi").textContent = "x" + multiplicador.toFixed(2);
+        desenharGrafico();
+      }, 50);
+    }
+
+    function desenharGrafico() {
+      ctx.clearRect(0, 0, 480, 220);
+      ctx.beginPath();
+      ctx.strokeStyle = "#00ffff";
+      ctx.lineWidth = 4;
+      for (let i = 0; i < 480; i += 5) {
+        let y = 200 - (Math.pow(i/30, 1.3) * 0.8);
+        if (i === 0) ctx.moveTo(i, y);
+        else ctx.lineTo(i, y);
+      }
+      ctx.stroke();
+    }
+
+    function retirar() {
+      if (!jogoAtivo || cashoutFeito) return;
+      cashoutFeito = true;
+      clearInterval(intervalo);
+
+      const ganho = Math.floor(apostaAtual * multiplicador);
+      db.collection("usuarios").doc(usuarioAtual.uid).get().then(doc => {
+        const saldo = doc.data().saldo || 0;
+        db.collection("usuarios").doc(usuarioAtual.uid).update({ saldo: saldo + ganho });
+      });
+
+      document.getElementById("resultado").innerHTML = `✅ RETIRASTE EM <strong>x\( {multiplicador.toFixed(2)}</strong><br>GANHASTE <strong> \){ganho} MOEDAS</strong>`;
+      finalizarJogo();
+    }
+
+    function crash() {
+      clearInterval(intervalo);
+      jogoAtivo = false;
+      document.getElementById("multi").style.color = "#ff3366";
+      document.getElementById("multi").textContent = "💥 CRASH!";
+      document.getElementById("status").innerHTML = "💥 O AVIÃO CAIU!";
+      document.getElementById("btnRetirar").style.display = "none";
+      document.getElementById("btnApostar").style.display = "block";
+
+      setTimeout(() => {
+        document.getElementById("multi").style.color = "#00ffff";
+        document.getElementById("resultado").innerHTML = "💥 Perdeste a aposta!";
+        finalizarJogo();
+      }, 2000);
+    }
+
+    function finalizarJogo() {
+      document.getElementById("btnRetirar").style.display = "none";
+      document.getElementById("btnApostar").style.display = "block";
+      jogoAtivo = false;
+      carregarSaldo();
+      carregarHistorico();
+    }
+
+    function carregarHistorico() {
+      // Pode ser expandido depois
+    }
+  </script>
+</body>
+</html>
