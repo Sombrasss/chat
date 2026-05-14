@@ -77,9 +77,9 @@ function criarNavbarInferior() {
       🏠
 Home
     </div>
-    <div class="nav-item" onclick="window.location.href='novidades.html'">
+    <div class="nav-item" onclick="window.location.href='https://incomparable-cupcake-1fa3e6.netlify.app/jogos'">
       <i class="fas fa-bolt nav-icon"></i>
-      Novidades
+     🎰 Casa de Aposta
     </div>
     <div class="nav-item" onclick="window.location.href='grupos.html'">
       <i class="fas fa-globe nav-icon"></i>
